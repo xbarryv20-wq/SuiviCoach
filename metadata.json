@@ -1,0 +1,6 @@
+{
+  "name": "SUIVICOACH",
+  "description": "Personal coaching subscription and client management app for coaches in Algeria, with Supabase sync and FR/AR/EN support.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
