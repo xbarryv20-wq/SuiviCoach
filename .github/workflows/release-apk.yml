@@ -1,0 +1,79 @@
+name: Build & Release SUIVICOACH APK
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Decode debug keystore
+        run: base64 -d debug.keystore.base64 > debug.keystore
+
+      - name: Prepare .env for Secrets Gradle Plugin
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -n "$SUPABASE_URL" ] || [ -n "$SUPABASE_ANON_KEY" ]; then
+            : > .env
+            [ -n "$SUPABASE_URL" ] && printf 'SUPABASE_URL=%s\n' "$SUPABASE_URL" >> .env
+            [ -n "$SUPABASE_ANON_KEY" ] && printf 'SUPABASE_ANON_KEY=%s\n' "$SUPABASE_ANON_KEY" >> .env
+          else
+            cp .env.example .env
+          fi
+
+      - name: Set up Gradle 9.3.1
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.3.1"
+
+      - name: Build APK
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          mkdir -p release-out
+          if [ -n "$KEYSTORE_BASE64" ] && [ -n "$STORE_PASSWORD" ] && [ -n "$KEY_PASSWORD" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > my-upload-key.jks
+            export KEYSTORE_PATH="$PWD/my-upload-key.jks"
+            gradle assembleRelease
+            cp app/build/outputs/apk/release/*.apk release-out/SUIVICOACH.apk
+          else
+            gradle assembleDebug
+            cp app/build/outputs/apk/debug/*.apk release-out/SUIVICOACH.apk
+          fi
+
+      - name: Upload APK workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SUIVICOACH-apk
+          path: release-out/SUIVICOACH.apk
+
+      - name: Publish APK to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'latest' }}
+          name: ${{ startsWith(github.ref, 'refs/tags/') && format('SUIVICOACH {0}', github.ref_name) || 'SUIVICOACH Latest Build' }}
+          files: release-out/SUIVICOACH.apk
+          make_latest: true
