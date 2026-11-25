@@ -22,9 +22,6 @@ jobs:
           distribution: temurin
           java-version: "21"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Decode debug keystore
         run: base64 -d debug.keystore.base64 > debug.keystore
 
