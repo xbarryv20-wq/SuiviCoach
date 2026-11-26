@@ -320,12 +320,14 @@ fun ClientDetailScreen(
                   style = MaterialTheme.typography.bodyMedium.tabular(),
                   color = colors.textMuted,
                 )
+                val rem = dossier.getRemainingBalanceFor(sub.id)
+                val fullyPaid = rem == 0
                 Text(
                   text =
-                    if (sub.isFullyPaid) strings.paidBadge
-                    else strings.remainingToPayFormat(formatDA(sub.remainingBalanceDa)),
+                    if (fullyPaid) strings.paidBadge
+                    else strings.remainingToPayFormat(formatDA(rem)),
                   style = MaterialTheme.typography.labelLarge.tabular(),
-                  color = if (sub.isFullyPaid) colors.statusActiveInk else colors.statusExpiringInk,
+                  color = if (fullyPaid) colors.statusActiveInk else colors.statusExpiringInk,
                 )
               }
 

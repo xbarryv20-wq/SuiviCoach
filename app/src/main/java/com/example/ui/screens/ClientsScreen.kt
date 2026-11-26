@@ -292,7 +292,8 @@ private fun ClientListCard(
           }
         }
 
-        if (!sub.isFullyPaid) {
+        val rem = dossier.getRemainingBalanceFor(sub.id)
+        if (rem > 0) {
           Box(
             modifier =
               Modifier
@@ -301,7 +302,7 @@ private fun ClientListCard(
                 .padding(horizontal = 10.dp, vertical = 4.dp),
           ) {
             Text(
-              text = strings.remainingToPayFormat(formatDA(sub.remainingBalanceDa)),
+              text = strings.remainingToPayFormat(formatDA(rem)),
               style = MaterialTheme.typography.labelMedium.tabular(),
               fontWeight = FontWeight.SemiBold,
               color = colors.statusExpiringInk,

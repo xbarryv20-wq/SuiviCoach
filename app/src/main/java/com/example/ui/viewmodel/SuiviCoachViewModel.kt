@@ -132,7 +132,7 @@ data class SuiviUiState(
       val monthlyRev =
         payments.filter { it.paidAt.startsWith(monthPrefix) }.sumOf { it.amountDa }
       val totalCollected = payments.sumOf { it.amountDa }
-      val totalPending = subscriptions.sumOf { it.remainingBalanceDa }
+      val totalPending = allDossiers.sumOf { it.totalDueDa }
       val byMethod =
         PaymentMethod.entries.associateWith { method ->
           payments.filter { it.method == method }.sumOf { it.amountDa }
@@ -685,7 +685,7 @@ class SuiviCoachViewModel(application: Application) : AndroidViewModel(applicati
 
         val updatedSub =
           if (subscription != null) {
-            val newPaid = (subscription.amountPaidDa + amountDa).coerceAtMost(subscription.priceDa)
+            val newPaid = subscription.amountPaidDa + amountDa
             withValidToken { token, _ ->
               supabase.updateSubscription(config, token, subscription.copy(amountPaidDa = newPaid))
             }

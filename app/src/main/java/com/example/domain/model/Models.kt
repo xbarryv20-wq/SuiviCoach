@@ -149,8 +149,31 @@ data class ClientDossier(
   val payments: List<Payment>,
 ) {
   val totalDueDa: Int
-    get() = subscriptions.sumOf { it.remainingBalanceDa }
+    get() {
+      val totalPrice = subscriptions.sumOf { it.priceDa }
+      val totalPaid = payments.sumOf { it.amountDa }
+      return (totalPrice - totalPaid).coerceAtLeast(0)
+    }
 
   val totalPaidDa: Int
     get() = payments.sumOf { it.amountDa }
+
+  /**
+   * Computes remaining balance for each subscription by allocating total payments chronologically (oldest first).
+   */
+  fun getRemainingBalanceFor(subId: String): Int {
+    val sortedSubs = subscriptions.sortedWith(compareBy<Subscription> { it.startDate }.thenBy { it.createdAt })
+    var poolPaid = payments.sumOf { it.amountDa }
+    for (sub in sortedSubs) {
+      val subPrice = sub.priceDa
+      val allocated = minOf(poolPaid, subPrice)
+      poolPaid -= allocated
+      val remaining = (subPrice - allocated).coerceAtLeast(0)
+      if (sub.id == subId) {
+        return remaining
+      }
+    }
+    val targetSub = subscriptions.firstOrNull { it.id == subId }
+    return targetSub?.let { (it.priceDa - it.amountPaidDa).coerceAtLeast(0) } ?: 0
+  }
 }
