@@ -140,6 +140,13 @@ data class AppStrings(
   val addPlanTemplate: String,
   val daysUnit: String,
   val sessionsOptionalHint: String,
+  // Profile Picture
+  val profilePicture: String,
+  val changeProfilePicture: String,
+  // About
+  val aboutTitle: String,
+  val developedBy: String,
+  val openGitHubProfile: String,
   // WhatsApp Message Builder
   val whatsappReminderMessage: (clientName: String, planName: String, endDate: String, daysLeft: Int) -> String,
 )
@@ -289,6 +296,11 @@ private val FrenchStrings =
     addPlanTemplate = "Ajouter un forfait",
     daysUnit = "jours",
     sessionsOptionalHint = "Ex: 12 (laisser vide si illimité)",
+    profilePicture = "Photo de profil",
+    changeProfilePicture = "Changer la photo de profil",
+    aboutTitle = "À propos",
+    developedBy = "Développé par",
+    openGitHubProfile = "Voir le profil GitHub",
     whatsappReminderMessage = { name, plan, endDate, days ->
       if (days <= 0) {
         "Salam $name ! Ton abonnement coaching ($plan) a expiré le $endDate. Dis-moi quand tu veux renouveler pour continuer ta progression !"
@@ -412,6 +424,11 @@ private val ArabicStrings =
     addPlanTemplate = "إضافة باقة",
     daysUnit = "يوم",
     sessionsOptionalHint = "مثال: 12 (اتركه فارغاً إذا كان مفتوحاً)",
+    profilePicture = "صورة الملف الشخصي",
+    changeProfilePicture = "تغيير الصورة الشخصية",
+    aboutTitle = "حول التطبيق",
+    developedBy = "طُور بواسطة",
+    openGitHubProfile = "فتح ملف GitHub",
     whatsappReminderMessage = { name, plan, endDate, days ->
       if (days <= 0) {
         "السلام عليكم $name! اشتراكك في التدريب ($plan) انتهى بتاريخ $endDate. أخبرني عندما ترغب في التجديد لمواصلة التقدم!"
@@ -535,6 +552,11 @@ private val EnglishStrings =
     addPlanTemplate = "Add Plan",
     daysUnit = "days",
     sessionsOptionalHint = "e.g. 12 (leave empty for unlimited)",
+    profilePicture = "Profile Picture",
+    changeProfilePicture = "Change Profile Picture",
+    aboutTitle = "About",
+    developedBy = "Developed by",
+    openGitHubProfile = "View GitHub Profile",
     whatsappReminderMessage = { name, plan, endDate, days ->
       if (days <= 0) {
         "Salam $name! Your coaching subscription ($plan) expired on $endDate. Let me know when you'd like to renew and keep progressing!"

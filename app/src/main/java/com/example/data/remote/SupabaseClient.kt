@@ -219,6 +219,7 @@ class SupabaseClient {
           businessName = profile.businessName,
           phone = profile.phone,
           email = profile.email,
+          avatarUrl = profile.avatarUrl,
         )
       val request =
         authorizedRequest(config, accessToken, "$base/rest/v1/coach_profiles")
@@ -480,6 +481,7 @@ class SupabaseClient {
       businessName = businessName,
       phone = phone,
       email = email,
+      avatarUrl = avatarUrl,
     )
 
   private fun ClientDto.toDomain(): Client? {

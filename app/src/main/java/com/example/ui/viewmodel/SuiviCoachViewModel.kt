@@ -170,6 +170,7 @@ class SuiviCoachViewModel(application: Application) : AndroidViewModel(applicati
           clients = initial.cachedClients,
           subscriptions = initial.cachedSubscriptions,
           payments = initial.cachedPayments,
+          coachProfile = initial.coachProfile,
         )
       }
       if (initial.supabaseConfig.isConfigured && initial.session != null) {
@@ -302,6 +303,7 @@ class SuiviCoachViewModel(application: Application) : AndroidViewModel(applicati
         supabase.signOut(config, token)
       }
       store.saveSession(null)
+      store.saveCoachProfile(null)
       _uiState.update {
         it.copy(
           session = null,
@@ -339,8 +341,10 @@ class SuiviCoachViewModel(application: Application) : AndroidViewModel(applicati
                 businessName = "SUIVICOACH Studio",
                 phone = "",
                 email = it.email,
+                avatarUrl = "",
               )
             }
+        store.saveCoachProfile(resolvedProfile)
         _uiState.update {
           it.copy(
             isSyncing = false,
@@ -361,7 +365,7 @@ class SuiviCoachViewModel(application: Application) : AndroidViewModel(applicati
     }
   }
 
-  fun updateCoachProfile(fullName: String, businessName: String, phone: String) {
+  fun updateCoachProfile(fullName: String, businessName: String, phone: String, avatarUrl: String) {
     val config = _uiState.value.supabaseConfig
     val session = _uiState.value.session ?: return
     viewModelScope.launch {
@@ -377,9 +381,11 @@ class SuiviCoachViewModel(application: Application) : AndroidViewModel(applicati
                 businessName = businessName.trim(),
                 phone = phone.trim(),
                 email = session.email,
+                avatarUrl = avatarUrl,
               ),
             )
           }
+        store.saveCoachProfile(updated)
         _uiState.update {
           it.copy(
             coachProfile = updated,

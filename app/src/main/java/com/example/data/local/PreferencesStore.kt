@@ -11,6 +11,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.example.BuildConfig
 import com.example.domain.model.AuthSession
 import com.example.domain.model.Client
+import com.example.domain.model.CoachProfile
 import com.example.domain.model.Payment
 import com.example.domain.model.PlanTemplate
 import com.example.domain.model.Subscription
@@ -39,6 +40,7 @@ class PreferencesStore(private val context: Context) {
     )
   private val paymentListAdapter =
     moshi.adapter<List<Payment>>(Types.newParameterizedType(List::class.java, Payment::class.java))
+  private val coachProfileAdapter = moshi.adapter(CoachProfile::class.java)
 
   private object Keys {
     val SUPABASE_URL = stringPreferencesKey("supabase_url")
@@ -55,6 +57,7 @@ class PreferencesStore(private val context: Context) {
     val CACHED_CLIENTS = stringPreferencesKey("cached_clients_json")
     val CACHED_SUBSCRIPTIONS = stringPreferencesKey("cached_subscriptions_json")
     val CACHED_PAYMENTS = stringPreferencesKey("cached_payments_json")
+    val COACH_PROFILE = stringPreferencesKey("coach_profile_json")
   }
 
   val defaultTemplates: List<PlanTemplate> =
@@ -130,6 +133,15 @@ class PreferencesStore(private val context: Context) {
           }
         } ?: emptyList()
 
+      val profile =
+        prefs[Keys.COACH_PROFILE]?.let {
+          try {
+            coachProfileAdapter.fromJson(it)
+          } catch (_: Exception) {
+            null
+          }
+        }
+
       PersistedAppState(
         language = lang,
         isDarkMode = isDark,
@@ -139,6 +151,7 @@ class PreferencesStore(private val context: Context) {
         cachedClients = clients,
         cachedSubscriptions = subscriptions,
         cachedPayments = payments,
+        coachProfile = profile,
       )
     }
 
@@ -161,6 +174,7 @@ class PreferencesStore(private val context: Context) {
         prefs.remove(Keys.CACHED_CLIENTS)
         prefs.remove(Keys.CACHED_SUBSCRIPTIONS)
         prefs.remove(Keys.CACHED_PAYMENTS)
+        prefs.remove(Keys.COACH_PROFILE)
       } else {
         prefs[Keys.ACCESS_TOKEN] = session.accessToken
         prefs[Keys.REFRESH_TOKEN] = session.refreshToken
@@ -178,6 +192,16 @@ class PreferencesStore(private val context: Context) {
 
   suspend fun setDarkMode(isDark: Boolean) {
     context.suiviDataStore.edit { prefs -> prefs[Keys.DARK_MODE] = isDark }
+  }
+
+  suspend fun saveCoachProfile(profile: CoachProfile?) {
+    context.suiviDataStore.edit { prefs ->
+      if (profile == null) {
+        prefs.remove(Keys.COACH_PROFILE)
+      } else {
+        prefs[Keys.COACH_PROFILE] = coachProfileAdapter.toJson(profile)
+      }
+    }
   }
 
   suspend fun savePlanTemplates(templates: List<PlanTemplate>) {
@@ -208,4 +232,5 @@ data class PersistedAppState(
   val cachedClients: List<Client>,
   val cachedSubscriptions: List<Subscription>,
   val cachedPayments: List<Payment>,
+  val coachProfile: CoachProfile? = null,
 )

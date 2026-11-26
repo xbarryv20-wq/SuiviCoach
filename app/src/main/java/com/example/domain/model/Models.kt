@@ -59,6 +59,7 @@ data class CoachProfile(
   val businessName: String,
   val phone: String,
   val email: String,
+  val avatarUrl: String = "",
 )
 
 @JsonClass(generateAdapter = true)

@@ -18,8 +18,12 @@ create table if not exists public.coach_profiles (
   business_name text not null default 'SUIVICOACH Studio',
   phone text not null default '',
   email text not null default '',
+  avatar_url text not null default '',
   created_at timestamptz not null default now()
 );
+
+-- Migration: Add avatar_url column if it doesn't exist yet
+alter table public.coach_profiles add column if not exists avatar_url text not null default '';
 
 -- Auto-create coach profile when a coach signs up
 create or replace function public.handle_new_coach_user()

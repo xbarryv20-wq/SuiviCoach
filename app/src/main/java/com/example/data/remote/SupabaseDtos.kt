@@ -58,6 +58,7 @@ data class CoachProfileDto(
   @Json(name = "business_name") val businessName: String = "",
   val phone: String = "",
   val email: String = "",
+  @Json(name = "avatar_url") val avatarUrl: String = "",
 )
 
 @JsonClass(generateAdapter = true)
