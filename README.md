@@ -105,7 +105,7 @@ SUIVICOACH intègre des générateurs de messages WhatsApp instantanés :
 
 **Developed by Aoussedj Abdelbari**  
 *Développé par Aoussedj Abdelbari*  
-*طُور بواسطة عوضج عبد الباري*
+*طُور بواسطة عوسج عبد الباري*
 
 صُنع بـ ❤️ في الجزائر 🇩🇿
 
