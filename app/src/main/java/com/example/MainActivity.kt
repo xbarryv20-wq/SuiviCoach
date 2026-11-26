@@ -367,6 +367,7 @@ fun SuiviCoachApp(viewModel: SuiviCoachViewModel = viewModel()) {
                       coachName =
                         state.coachProfile?.fullName?.ifBlank { state.session?.fullName.orEmpty() }
                           ?: state.session?.fullName.orEmpty(),
+                      coachAvatarUrl = state.coachProfile?.avatarUrl.orEmpty(),
                       language = state.language,
                       isDarkMode = state.isDarkMode,
                       isSyncing = state.isSyncing,

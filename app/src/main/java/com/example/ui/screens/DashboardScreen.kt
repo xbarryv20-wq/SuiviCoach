@@ -54,6 +54,7 @@ import com.example.i18n.AppLanguage
 import com.example.i18n.AppStrings
 import com.example.i18n.formatDA
 import com.example.i18n.paymentMethodLabel
+import com.example.ui.components.AvatarImage
 import com.example.ui.components.ClientMonogramAvatar
 import com.example.ui.components.DaysRemainingPill
 import com.example.ui.components.QuickSettingsMenu
@@ -70,6 +71,7 @@ import com.example.util.IntentHelpers
 @Composable
 fun DashboardScreen(
   coachName: String,
+  coachAvatarUrl: String = "",
   language: AppLanguage,
   isDarkMode: Boolean,
   isSyncing: Boolean,
@@ -108,7 +110,15 @@ fun DashboardScreen(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier.weight(1f),
           ) {
-            SuiviCoachLogo(size = 42.dp)
+            if (coachAvatarUrl.isNotBlank()) {
+              AvatarImage(
+                avatarUrl = coachAvatarUrl,
+                contentDescription = null,
+                size = 42.dp,
+              )
+            } else {
+              SuiviCoachLogo(size = 42.dp)
+            }
             Column {
               Text(
                 text = strings.appName,
