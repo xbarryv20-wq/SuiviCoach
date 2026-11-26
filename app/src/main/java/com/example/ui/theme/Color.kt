@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
-// Brand & Accent Colors
+// Brand & surfaces
 val MidnightNavy = Color(0xFF090D16)
 val DarkCardSurface = Color(0xFF121826)
 val DarkSoftSurface = Color(0xFF1A2234)
@@ -15,15 +15,23 @@ val LightBackground = Color(0xFFF8FAFC)
 val LightCardSurface = Color(0xFFFFFFFF)
 val LightSoftSurface = Color(0xFFF1F5F9)
 val LightTextPrimary = Color(0xFF0F172A)
-val LightTextMuted = Color(0xFF64748B)
+val LightTextMuted = Color(0xFF5B6779)
 
-val ElectricBlue = Color(0xFF3B82F6)
-val VibrantCyan = Color(0xFF06B6D4)
+// Fills (solid buttons, bars)
+val ElectricBlue = Color(0xFF2563EB)
+val VibrantCyan = Color(0xFF0891B2)
 
-// Subscription Status Colors
+// Status fills
 val StatusActiveGreen = Color(0xFF10B981)
 val StatusExpiringAmber = Color(0xFFF59E0B)
 val StatusExpiredRed = Color(0xFFEF4444)
+
+// Light-mode ink: accent/status hues darkened so small text clears 4.5:1 on white
+val BlueInkLight = Color(0xFF1D4ED8)
+val CyanInkLight = Color(0xFF0E7490)
+val GreenInkLight = Color(0xFF047857)
+val AmberInkLight = Color(0xFFB45309)
+val RedInkLight = Color(0xFFB91C1C)
 
 @Immutable
 data class SuiviExtendedColors(
@@ -34,9 +42,13 @@ data class SuiviExtendedColors(
   val textMuted: Color,
   val accentBlue: Color,
   val accentCyan: Color,
+  val accentInk: Color,
   val statusActive: Color,
   val statusExpiring: Color,
   val statusExpired: Color,
+  val statusActiveInk: Color,
+  val statusExpiringInk: Color,
+  val statusExpiredInk: Color,
   val subtleBorder: Color,
   val isDark: Boolean,
 )
@@ -50,9 +62,13 @@ val DarkSuiviColors =
     textMuted = DarkTextMuted,
     accentBlue = ElectricBlue,
     accentCyan = VibrantCyan,
+    accentInk = VibrantCyan,
     statusActive = StatusActiveGreen,
     statusExpiring = StatusExpiringAmber,
     statusExpired = StatusExpiredRed,
+    statusActiveInk = StatusActiveGreen,
+    statusExpiringInk = StatusExpiringAmber,
+    statusExpiredInk = StatusExpiredRed,
     subtleBorder = Color(0xFF1E293B),
     isDark = true,
   )
@@ -66,9 +82,13 @@ val LightSuiviColors =
     textMuted = LightTextMuted,
     accentBlue = ElectricBlue,
     accentCyan = VibrantCyan,
+    accentInk = CyanInkLight,
     statusActive = StatusActiveGreen,
     statusExpiring = StatusExpiringAmber,
     statusExpired = StatusExpiredRed,
+    statusActiveInk = GreenInkLight,
+    statusExpiringInk = AmberInkLight,
+    statusExpiredInk = RedInkLight,
     subtleBorder = Color(0xFFE2E8F0),
     isDark = false,
   )

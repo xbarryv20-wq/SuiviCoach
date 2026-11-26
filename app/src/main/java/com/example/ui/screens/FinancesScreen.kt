@@ -124,7 +124,7 @@ fun FinancesScreen(
                 text = formatDA(metrics.totalCollectedDa),
                 style = MaterialTheme.typography.headlineSmall.tabular(),
                 fontWeight = FontWeight.Bold,
-                color = colors.statusActive,
+                color = colors.statusActiveInk,
               )
             }
           }
@@ -147,7 +147,7 @@ fun FinancesScreen(
                 text = formatDA(metrics.totalPendingDa),
                 style = MaterialTheme.typography.headlineSmall.tabular(),
                 fontWeight = FontWeight.Bold,
-                color = if (metrics.totalPendingDa > 0) colors.statusExpiring else colors.textMuted,
+                color = if (metrics.totalPendingDa > 0) colors.statusExpiringInk else colors.textMuted,
               )
             }
           }
@@ -187,7 +187,7 @@ fun FinancesScreen(
                   Text(
                     text = formatDA(amount),
                     style = MaterialTheme.typography.labelLarge.tabular(),
-                    color = colors.accentCyan,
+                    color = colors.accentInk,
                   )
                 }
                 Box(
@@ -205,9 +205,7 @@ fun FinancesScreen(
                           .fillMaxWidth(ratio.coerceAtLeast(0.03f))
                           .fillMaxHeight()
                           .clip(RoundedCornerShape(50))
-                          .background(
-                            Brush.horizontalGradient(listOf(colors.accentBlue, colors.accentCyan))
-                          ),
+                          .background(colors.accentBlue),
                     )
                   }
                 }
@@ -269,7 +267,7 @@ fun FinancesScreen(
                       payment.note,
                     )
                       .filter { it.isNotBlank() }
-                      .joinToString(" • "),
+                      .joinToString(", "),
                   style = MaterialTheme.typography.bodyMedium.tabular(),
                   color = colors.textMuted,
                   maxLines = 1,
@@ -280,7 +278,7 @@ fun FinancesScreen(
                 text = "+${formatDA(payment.amountDa)}",
                 style = MaterialTheme.typography.titleSmall.tabular(),
                 fontWeight = FontWeight.Bold,
-                color = colors.statusActive,
+                color = colors.statusActiveInk,
               )
             }
           }

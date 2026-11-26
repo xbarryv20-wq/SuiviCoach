@@ -384,7 +384,7 @@ fun RenewSubscriptionDialog(
             Text(
               text = clientName,
               style = MaterialTheme.typography.bodyMedium,
-              color = colors.accentCyan,
+              color = colors.accentInk,
             )
           }
           IconButton(onClick = onDismiss) {

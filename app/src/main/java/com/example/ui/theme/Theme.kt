@@ -59,7 +59,7 @@ private val SuiviLightColorScheme =
     surfaceVariant = LightSoftSurface,
     onSurfaceVariant = LightTextMuted,
     outline = Color(0xFFCBD5E1),
-    error = StatusExpiredRed,
+    error = RedInkLight,
     onError = Color.White,
   )
 

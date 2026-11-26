@@ -284,8 +284,8 @@ fun SuiviCoachApp(viewModel: SuiviCoachViewModel = viewModel()) {
                   label = { Text(label) },
                   colors =
                     NavigationRailItemDefaults.colors(
-                      selectedIconColor = colors.accentCyan,
-                      selectedTextColor = colors.accentCyan,
+                      selectedIconColor = colors.accentInk,
+                      selectedTextColor = colors.accentInk,
                       unselectedIconColor = colors.textMuted,
                       unselectedTextColor = colors.textMuted,
                       indicatorColor = colors.softSurface,
@@ -333,8 +333,8 @@ fun SuiviCoachApp(viewModel: SuiviCoachViewModel = viewModel()) {
                       label = { Text(label, maxLines = 1) },
                       colors =
                         NavigationBarItemDefaults.colors(
-                          selectedIconColor = colors.accentCyan,
-                          selectedTextColor = colors.accentCyan,
+                          selectedIconColor = colors.accentInk,
+                          selectedTextColor = colors.accentInk,
                           unselectedIconColor = colors.textMuted,
                           unselectedTextColor = colors.textMuted,
                           indicatorColor = colors.softSurface,

@@ -95,7 +95,7 @@ fun ClientDetailScreen(
             onDeleteClient()
           }
         ) {
-          Text(strings.delete, color = colors.statusExpired)
+          Text(strings.delete, color = colors.statusExpiredInk)
         }
       },
       dismissButton = {
@@ -148,7 +148,7 @@ fun ClientDetailScreen(
               Icon(
                 imageVector = Icons.Filled.DeleteOutline,
                 contentDescription = strings.delete,
-                tint = colors.statusExpired,
+                tint = colors.statusExpiredInk,
               )
             }
           }
@@ -191,7 +191,7 @@ fun ClientDetailScreen(
                     Text(
                       text = dossier.client.goal,
                       style = MaterialTheme.typography.bodyMedium,
-                      color = colors.accentCyan,
+                      color = colors.accentInk,
                     )
                   }
                   if (dossier.client.phone.isNotBlank()) {
@@ -306,7 +306,7 @@ fun ClientDetailScreen(
                 text = "${sub.planName} — ${formatDA(sub.priceDa)}",
                 style = MaterialTheme.typography.titleLarge.tabular(),
                 fontWeight = FontWeight.Bold,
-                color = colors.accentCyan,
+                color = colors.accentInk,
               )
 
               SubscriptionProgressBar(progress = sub.progressFraction, status = sub.status)
@@ -325,7 +325,7 @@ fun ClientDetailScreen(
                     if (sub.isFullyPaid) strings.paidBadge
                     else strings.remainingToPayFormat(formatDA(sub.remainingBalanceDa)),
                   style = MaterialTheme.typography.labelLarge.tabular(),
-                  color = if (sub.isFullyPaid) colors.statusActive else colors.statusExpiring,
+                  color = if (sub.isFullyPaid) colors.statusActiveInk else colors.statusExpiringInk,
                 )
               }
 
@@ -359,7 +359,7 @@ fun ClientDetailScreen(
                       enabled = sub.sessionsUsed < sub.sessionsTotal,
                       modifier = Modifier.size(48.dp),
                     ) {
-                      Icon(Icons.Filled.Add, contentDescription = "+1", tint = colors.accentCyan)
+                      Icon(Icons.Filled.Add, contentDescription = "+1", tint = colors.accentInk)
                     }
                   }
                 }
@@ -449,7 +449,7 @@ fun ClientDetailScreen(
                   text =
                     listOf(DateUtils.formatDisplay(pay.paidAt), pay.note)
                       .filter { it.isNotBlank() }
-                      .joinToString(" • "),
+                      .joinToString(", "),
                   style = MaterialTheme.typography.bodyMedium.tabular(),
                   color = colors.textMuted,
                 )
@@ -458,7 +458,7 @@ fun ClientDetailScreen(
                 text = "+${formatDA(pay.amountDa)}",
                 style = MaterialTheme.typography.titleSmall.tabular(),
                 fontWeight = FontWeight.Bold,
-                color = colors.statusActive,
+                color = colors.statusActiveInk,
               )
             }
           }

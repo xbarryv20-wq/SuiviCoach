@@ -159,7 +159,7 @@ fun ClientsScreen(
               Icon(
                 imageVector = Icons.Filled.FitnessCenter,
                 contentDescription = null,
-                tint = colors.accentCyan,
+                tint = colors.accentInk,
                 modifier = Modifier.size(32.dp),
               )
             }
@@ -240,7 +240,7 @@ private fun ClientListCard(
             val subtitle =
               listOf(dossier.client.goal, dossier.client.phone)
                 .filter { it.isNotBlank() }
-                .joinToString(" • ")
+                .joinToString(", ")
             if (subtitle.isNotBlank()) {
               Text(
                 text = subtitle,
@@ -265,7 +265,7 @@ private fun ClientListCard(
         ) {
           Column {
             Text(
-              text = "${sub.planName} • ${formatDA(sub.priceDa)}",
+              text = "${sub.planName}, ${formatDA(sub.priceDa)}",
               style = MaterialTheme.typography.labelLarge.tabular(),
               color = colors.textPrimary,
             )
@@ -286,7 +286,7 @@ private fun ClientListCard(
               Text(
                 text = strings.sessionsLabel(sub.sessionsUsed, sub.sessionsTotal),
                 style = MaterialTheme.typography.labelMedium.tabular(),
-                color = colors.accentCyan,
+                color = colors.accentInk,
               )
             }
           }
@@ -304,7 +304,7 @@ private fun ClientListCard(
               text = strings.remainingToPayFormat(formatDA(sub.remainingBalanceDa)),
               style = MaterialTheme.typography.labelMedium.tabular(),
               fontWeight = FontWeight.SemiBold,
-              color = colors.statusExpiring,
+              color = colors.statusExpiringInk,
             )
           }
         }

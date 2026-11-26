@@ -167,7 +167,7 @@ fun AuthScreen(
                 color = Color.White,
               )
               Text(
-                text = "Algeria • Personal Coaching",
+                text = "Personal coaching in Algeria",
                 style = MaterialTheme.typography.labelMedium,
                 color = colors.accentCyan,
               )
@@ -283,7 +283,7 @@ fun AuthScreen(
             Text(
               text = authError,
               style = MaterialTheme.typography.bodyMedium,
-              color = colors.statusExpired,
+              color = colors.statusExpiredInk,
               modifier =
                 Modifier
                   .fillMaxWidth()
@@ -297,7 +297,7 @@ fun AuthScreen(
             Text(
               text = authInfoMessage,
               style = MaterialTheme.typography.bodyMedium,
-              color = colors.statusActive,
+              color = colors.statusActiveInk,
               modifier =
                 Modifier
                   .fillMaxWidth()
@@ -360,7 +360,7 @@ fun AuthScreen(
                 text =
                   if (activeTab == AuthTab.RESET) strings.signIn
                   else strings.forgotPasswordQuestion,
-                color = colors.accentCyan,
+                color = colors.accentInk,
               )
             }
           }

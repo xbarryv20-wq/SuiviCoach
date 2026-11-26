@@ -196,7 +196,7 @@ fun SettingsScreen(
                   Icon(
                     Icons.Filled.PhotoCamera,
                     contentDescription = strings.changeProfilePicture,
-                    tint = colors.accentCyan,
+                    tint = colors.accentInk,
                     modifier = Modifier.size(28.dp),
                   )
                 }
@@ -212,14 +212,14 @@ fun SettingsScreen(
                   Text(
                     text = session!!.email,
                     style = MaterialTheme.typography.bodySmall,
-                    color = colors.accentCyan,
+                    color = colors.accentInk,
                     maxLines = 1,
                   )
                 }
                 Text(
                   text = strings.changeProfilePicture,
                   style = MaterialTheme.typography.labelSmall,
-                  color = colors.accentCyan,
+                  color = colors.accentInk,
                   textDecoration = TextDecoration.Underline,
                   modifier =
                     Modifier.clickable {
@@ -337,7 +337,7 @@ fun SettingsScreen(
                 onClick = onOpenAddTemplate,
                 modifier = Modifier.size(48.dp).testTag("settings_add_template_btn"),
               ) {
-                Icon(Icons.Filled.Add, contentDescription = strings.addPlanTemplate, tint = colors.accentCyan)
+                Icon(Icons.Filled.Add, contentDescription = strings.addPlanTemplate, tint = colors.accentInk)
               }
             }
             templates.forEach { tpl ->
@@ -416,7 +416,7 @@ fun SettingsScreen(
             Text(
               text = strings.openGitHubProfile,
               style = MaterialTheme.typography.bodyMedium.copy(textDecoration = TextDecoration.Underline),
-              color = colors.accentCyan,
+              color = colors.accentInk,
               modifier = Modifier.clickable { openGithubProfile() },
             )
           }
@@ -432,7 +432,7 @@ fun SettingsScreen(
           colors =
             ButtonDefaults.buttonColors(
               containerColor = colors.statusExpired.copy(alpha = 0.16f),
-              contentColor = colors.statusExpired,
+              contentColor = colors.statusExpiredInk,
             ),
         ) {
           Icon(

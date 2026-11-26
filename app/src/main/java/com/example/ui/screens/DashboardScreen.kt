@@ -145,7 +145,7 @@ fun DashboardScreen(
               if (isSyncing) {
                 CircularProgressIndicator(
                   modifier = Modifier.size(18.dp),
-                  color = colors.accentCyan,
+                  color = colors.accentInk,
                   strokeWidth = 2.dp,
                 )
               } else {
@@ -167,11 +167,7 @@ fun DashboardScreen(
             Modifier
               .fillMaxWidth()
               .clip(RoundedCornerShape(22.dp))
-              .background(
-                Brush.linearGradient(
-                  colors = listOf(colors.accentBlue, colors.accentCyan),
-                )
-              )
+              .background(colors.accentBlue)
               .padding(20.dp),
         ) {
           Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -225,21 +221,21 @@ fun DashboardScreen(
           KpiMiniCard(
             title = strings.activeClients,
             value = metrics.activeCount.toString(),
-            accent = colors.statusActive,
+            accent = colors.statusActiveInk,
             icon = Icons.Filled.CheckCircle,
             modifier = Modifier.weight(1f),
           )
           KpiMiniCard(
             title = strings.expiringSoon,
             value = metrics.expiringSoonCount.toString(),
-            accent = colors.statusExpiring,
+            accent = colors.statusExpiringInk,
             icon = Icons.Filled.Schedule,
             modifier = Modifier.weight(1f),
           )
           KpiMiniCard(
             title = strings.expiredClients,
             value = metrics.expiredCount.toString(),
-            accent = colors.statusExpired,
+            accent = colors.statusExpiredInk,
             icon = Icons.Filled.ErrorOutline,
             modifier = Modifier.weight(1f),
           )
@@ -271,7 +267,7 @@ fun DashboardScreen(
               Icon(
                 imageVector = Icons.Filled.CheckCircle,
                 contentDescription = null,
-                tint = colors.statusActive,
+                tint = colors.statusActiveInk,
               )
               Text(
                 text = strings.noUrgentClients,
@@ -352,7 +348,7 @@ fun DashboardScreen(
                 )
                 Text(
                   text =
-                    "${DateUtils.formatDisplay(payment.paidAt)} • ${strings.paymentMethodLabel(payment.method)}",
+                    "${DateUtils.formatDisplay(payment.paidAt)}, ${strings.paymentMethodLabel(payment.method)}",
                   style = MaterialTheme.typography.bodyMedium.tabular(),
                   color = colors.textMuted,
                 )
@@ -361,7 +357,7 @@ fun DashboardScreen(
                 text = "+${formatDA(payment.amountDa)}",
                 style = MaterialTheme.typography.titleSmall.tabular(),
                 fontWeight = FontWeight.Bold,
-                color = colors.statusActive,
+                color = colors.statusActiveInk,
               )
             }
           }
@@ -459,7 +455,7 @@ private fun UrgentRenewalCard(
               overflow = TextOverflow.Ellipsis,
             )
             Text(
-              text = "${sub.planName} • ${DateUtils.formatDisplay(sub.endDate)}",
+              text = "${sub.planName}, ${DateUtils.formatDisplay(sub.endDate)}",
               style = MaterialTheme.typography.bodyMedium.tabular(),
               color = colors.textMuted,
               maxLines = 1,
@@ -498,7 +494,7 @@ private fun UrgentRenewalCard(
             Icon(
               imageVector = Icons.Filled.Chat,
               contentDescription = strings.whatsappAction,
-              tint = colors.statusActive,
+              tint = colors.statusActiveInk,
             )
           }
           Button(
