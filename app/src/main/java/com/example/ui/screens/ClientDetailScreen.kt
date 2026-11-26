@@ -244,7 +244,10 @@ fun ClientDetailScreen(
                         sub.planName,
                         DateUtils.formatDisplay(sub.endDate),
                         sub.daysRemaining,
+                        if (dossier.totalDueDa > 0) formatDA(dossier.totalDueDa) else "",
                       )
+                    } else if (dossier.totalDueDa > 0) {
+                      "Salam ${dossier.client.fullName} ! Il te reste ${formatDA(dossier.totalDueDa)} à régler."
                     } else {
                       "Salam ${dossier.client.fullName}!"
                     }

@@ -148,7 +148,7 @@ data class AppStrings(
   val developedBy: String,
   val openGitHubProfile: String,
   // WhatsApp Message Builder
-  val whatsappReminderMessage: (clientName: String, planName: String, endDate: String, daysLeft: Int) -> String,
+  val whatsappReminderMessage: (clientName: String, planName: String, endDate: String, daysLeft: Int, remainingText: String) -> String,
 )
 
 fun stringsFor(language: AppLanguage): AppStrings =
@@ -301,11 +301,12 @@ private val FrenchStrings =
     aboutTitle = "À propos",
     developedBy = "Développé par",
     openGitHubProfile = "Voir le profil GitHub",
-    whatsappReminderMessage = { name, plan, endDate, days ->
+    whatsappReminderMessage = { name, plan, endDate, days, due ->
+      val duePart = if (due.isBlank()) "" else " Il te reste $due à régler."
       if (days <= 0) {
-        "Salam $name ! Ton abonnement coaching ($plan) a expiré le $endDate. Dis-moi quand tu veux renouveler pour continuer ta progression !"
+        "Salam $name ! Ton abonnement coaching ($plan) a expiré le $endDate. Dis-moi quand tu veux renouveler pour continuer ta progression !$duePart"
       } else {
-        "Salam $name ! Petit rappel : ton abonnement coaching ($plan) expire le $endDate (dans $days j). Pense au renouvellement !"
+        "Salam $name ! Petit rappel : ton abonnement coaching ($plan) expire le $endDate (dans $days j). Pense au renouvellement !$duePart"
       }
     },
   )
@@ -429,11 +430,12 @@ private val ArabicStrings =
     aboutTitle = "حول التطبيق",
     developedBy = "طُور بواسطة",
     openGitHubProfile = "فتح ملف GitHub",
-    whatsappReminderMessage = { name, plan, endDate, days ->
+    whatsappReminderMessage = { name, plan, endDate, days, due ->
+      val duePart = if (due.isBlank()) "" else " يبقى عليك $due غير مسدد."
       if (days <= 0) {
-        "السلام عليكم $name! اشتراكك في التدريب ($plan) انتهى بتاريخ $endDate. أخبرني عندما ترغب في التجديد لمواصلة التقدم!"
+        "السلام عليكم $name! اشتراكك في التدريب ($plan) انتهى بتاريخ $endDate. أخبرني عندما ترغب في التجديد لمواصلة التقدم!$duePart"
       } else {
-        "السلام عليكم $name! تذكير لطيف: اشتراكك في التدريب ($plan) ينتهي بتاريخ $endDate (متبقي $days يوم)."
+        "السلام عليكم $name! تذكير لطيف: اشتراكك في التدريب ($plan) ينتهي بتاريخ $endDate (متبقي $days يوم).$duePart"
       }
     },
   )
@@ -557,11 +559,12 @@ private val EnglishStrings =
     aboutTitle = "About",
     developedBy = "Developed by",
     openGitHubProfile = "View GitHub Profile",
-    whatsappReminderMessage = { name, plan, endDate, days ->
+    whatsappReminderMessage = { name, plan, endDate, days, due ->
+      val duePart = if (due.isBlank()) "" else " You still have $due left to pay."
       if (days <= 0) {
-        "Salam $name! Your coaching subscription ($plan) expired on $endDate. Let me know when you'd like to renew and keep progressing!"
+        "Salam $name! Your coaching subscription ($plan) expired on $endDate. Let me know when you'd like to renew and keep progressing!$duePart"
       } else {
-        "Salam $name! Quick reminder: your coaching subscription ($plan) expires on $endDate ($days days left)."
+        "Salam $name! Quick reminder: your coaching subscription ($plan) expires on $endDate ($days days left).$duePart"
       }
     },
   )

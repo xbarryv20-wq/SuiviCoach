@@ -56,11 +56,11 @@ import com.example.i18n.formatDA
 import com.example.i18n.paymentMethodLabel
 import com.example.ui.components.ClientMonogramAvatar
 import com.example.ui.components.DaysRemainingPill
-import com.example.ui.components.LanguageSwitcherPill
+import com.example.ui.components.QuickSettingsMenu
 import com.example.ui.components.StatusBadge
 import com.example.ui.components.SubscriptionProgressBar
 import com.example.ui.components.SuiviCoachLogo
-import com.example.ui.components.ThemeToggleButton
+import com.example.ui.components.QuickSettingsMenu
 import com.example.ui.theme.SuiviTheme
 import com.example.ui.theme.tabular
 import com.example.ui.viewmodel.DashboardMetrics
@@ -130,11 +130,12 @@ fun DashboardScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp),
           ) {
-            LanguageSwitcherPill(currentLanguage = language, onSelect = onSelectLanguage)
-            ThemeToggleButton(
+            QuickSettingsMenu(
+              language = language,
               isDarkMode = isDarkMode,
-              onToggle = onToggleTheme,
-              contentDescription = strings.darkModeLabel,
+              onSelectLanguage = onSelectLanguage,
+              onToggleTheme = onToggleTheme,
+              contentDescription = strings.languageLabel,
             )
             IconButton(
               onClick = onSync,
@@ -296,6 +297,7 @@ fun DashboardScreen(
                   sub.planName,
                   DateUtils.formatDisplay(sub.endDate),
                   sub.daysRemaining,
+                  if (dossier.totalDueDa > 0) formatDA(dossier.totalDueDa) else "",
                 )
               IntentHelpers.openWhatsApp(context, dossier.client.phone, msg)
             },

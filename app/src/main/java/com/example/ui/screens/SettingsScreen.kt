@@ -8,7 +8,6 @@ import android.util.Base64
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -51,7 +50,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -64,6 +62,7 @@ import com.example.domain.model.PlanTemplate
 import com.example.i18n.AppLanguage
 import com.example.i18n.AppStrings
 import com.example.i18n.formatDA
+import com.example.ui.components.AvatarImage
 import com.example.ui.components.LanguageSwitcherPill
 import com.example.ui.theme.SuiviTheme
 import com.example.ui.theme.tabular
@@ -188,11 +187,10 @@ fun SettingsScreen(
                 contentAlignment = Alignment.Center,
               ) {
                 if (avatarUrl.isNotBlank()) {
-                  Image(
-                    painter = rememberAsyncImagePainter(avatarUrl),
+                  AvatarImage(
+                    avatarUrl = avatarUrl,
                     contentDescription = strings.profilePicture,
-                    modifier = Modifier.fillMaxSize().clip(CircleShape),
-                    contentScale = ContentScale.Crop,
+                    size = 80.dp,
                   )
                 } else {
                   Icon(
