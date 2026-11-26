@@ -4,6 +4,7 @@ import com.example.domain.model.AuthSession
 import com.example.domain.model.Client
 import com.example.domain.model.CoachProfile
 import com.example.domain.model.Payment
+import com.example.domain.model.PlanTemplate
 import com.example.domain.model.Subscription
 import com.example.domain.model.SupabaseConfig
 import com.squareup.moshi.Moshi
@@ -63,6 +64,12 @@ class SupabaseClient {
       Types.newParameterizedType(List::class.java, PaymentDto::class.java)
     )
   private val paymentAdapter = moshi.adapter(PaymentDto::class.java)
+
+  private val templateListAdapter =
+    moshi.adapter<List<PlanTemplateDto>>(
+      Types.newParameterizedType(List::class.java, PlanTemplateDto::class.java)
+    )
+  private val templateAdapter = moshi.adapter(PlanTemplateDto::class.java)
 
   private fun normalizeBaseUrl(url: String): String {
     var clean = url.trim().trimEnd('/')
@@ -228,6 +235,53 @@ class SupabaseClient {
           .build()
       val body = executeRestCall(request)
       profileListAdapter.fromJson(body)?.firstOrNull()?.toDomain() ?: profile
+    }
+
+  suspend fun fetchPlanTemplates(config: SupabaseConfig, accessToken: String): List<PlanTemplate> =
+    withContext(Dispatchers.IO) {
+      val base = normalizeBaseUrl(config.url)
+      val request =
+        authorizedRequest(config, accessToken, "$base/rest/v1/plan_templates?select=*&order=created_at.asc")
+          .get()
+          .build()
+      val body = executeRestCall(request)
+      (templateListAdapter.fromJson(body) ?: emptyList()).map { it.toDomain() }
+    }
+
+  suspend fun upsertPlanTemplate(
+    config: SupabaseConfig,
+    accessToken: String,
+    coachId: String,
+    tpl: PlanTemplate,
+  ): PlanTemplate =
+    withContext(Dispatchers.IO) {
+      val base = normalizeBaseUrl(config.url)
+      val dto =
+        PlanTemplateDto(
+          id = tpl.id,
+          coachId = coachId,
+          name = tpl.name,
+          durationDays = tpl.durationDays,
+          priceDa = tpl.priceDa,
+          sessionsTotal = tpl.sessionsTotal,
+        )
+      val request =
+        authorizedRequest(config, accessToken, "$base/rest/v1/plan_templates")
+          .addHeader("Prefer", "resolution=merge-duplicates,return=representation")
+          .post(templateAdapter.toJson(dto).toRequestBody(jsonMediaType))
+          .build()
+      val body = executeRestCall(request)
+      templateListAdapter.fromJson(body)?.firstOrNull()?.toDomain() ?: tpl
+    }
+
+  suspend fun deletePlanTemplate(config: SupabaseConfig, accessToken: String, templateId: String) =
+    withContext(Dispatchers.IO) {
+      val base = normalizeBaseUrl(config.url)
+      val request =
+        authorizedRequest(config, accessToken, "$base/rest/v1/plan_templates?id=eq.$templateId")
+          .delete()
+          .build()
+      executeRestCall(request)
     }
 
   suspend fun fetchClients(config: SupabaseConfig, accessToken: String): List<Client> =
@@ -482,6 +536,15 @@ class SupabaseClient {
       phone = phone,
       email = email,
       avatarUrl = avatarUrl,
+    )
+
+  private fun PlanTemplateDto.toDomain() =
+    PlanTemplate(
+      id = id,
+      name = name,
+      durationDays = durationDays,
+      priceDa = priceDa,
+      sessionsTotal = sessionsTotal,
     )
 
   private fun ClientDto.toDomain(): Client? {

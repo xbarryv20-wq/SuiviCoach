@@ -92,6 +92,16 @@ data class SubscriptionDto(
 )
 
 @JsonClass(generateAdapter = true)
+data class PlanTemplateDto(
+  val id: String,
+  @Json(name = "coach_id") val coachId: String,
+  val name: String,
+  @Json(name = "duration_days") val durationDays: Int,
+  @Json(name = "price_da") val priceDa: Int,
+  @Json(name = "sessions_total") val sessionsTotal: Int? = null,
+)
+
+@JsonClass(generateAdapter = true)
 data class PaymentDto(
   val id: String? = null,
   @Json(name = "coach_id") val coachId: String,

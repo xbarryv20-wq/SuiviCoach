@@ -48,6 +48,25 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_coach_user();
 
+-- 2b. Plan Templates Table
+create table if not exists public.plan_templates (
+  id text primary key,
+  coach_id uuid not null references auth.users(id) on delete cascade,
+  name text not null,
+  duration_days integer not null default 30,
+  price_da integer not null default 0,
+  sessions_total integer null,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_plan_templates_coach_id on public.plan_templates(coach_id);
+
+alter table public.plan_templates enable row level security;
+
+drop policy if exists "plan_templates_all_own" on public.plan_templates;
+create policy "plan_templates_all_own" on public.plan_templates
+  for all using (auth.uid() = coach_id) with check (auth.uid() = coach_id);
+
 -- 3. Clients Table
 create table if not exists public.clients (
   id uuid primary key default gen_random_uuid(),

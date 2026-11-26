@@ -322,17 +322,23 @@ class SuiviCoachViewModel(application: Application) : AndroidViewModel(applicati
     viewModelScope.launch {
       _uiState.update { it.copy(isSyncing = true) }
       try {
-        val (profile, clients, subs, payments) =
+        val (profile, clients, subs, pays, remoteTemplates) =
           withValidToken { token, session ->
             val p = supabase.fetchCoachProfile(config, token, session.userId)
             val c = supabase.fetchClients(config, token)
             val s = supabase.fetchSubscriptions(config, token)
             val pay = supabase.fetchPayments(config, token)
-            QuadData(p, c, s, pay)
+            val t = supabase.fetchPlanTemplates(config, token)
+            QuadData(p, c, s, pay, t)
           }
-        store.saveSyncedData(clients, subs, payments)
+        store.saveSyncedData(clients, subs, pays)
+        val mergedTemplates =
+          if (remoteTemplates.isNotEmpty()) remoteTemplates else _uiState.value.planTemplates
+        store.savePlanTemplates(mergedTemplates)
         val currentSession = _uiState.value.session
-        val resolvedProfile =
+        // Keep the local avatar if the remote profile doesn't have one yet.
+        val localAvatar = _uiState.value.coachProfile?.avatarUrl.orEmpty()
+        val baseProfile =
           profile
             ?: currentSession?.let {
               CoachProfile(
@@ -344,6 +350,12 @@ class SuiviCoachViewModel(application: Application) : AndroidViewModel(applicati
                 avatarUrl = "",
               )
             }
+        val resolvedProfile =
+          if (baseProfile != null && baseProfile.avatarUrl.isBlank() && localAvatar.isNotBlank()) {
+            baseProfile.copy(avatarUrl = localAvatar)
+          } else {
+            baseProfile ?: _uiState.value.coachProfile
+          }
         store.saveCoachProfile(resolvedProfile)
         _uiState.update {
           it.copy(
@@ -351,7 +363,8 @@ class SuiviCoachViewModel(application: Application) : AndroidViewModel(applicati
             coachProfile = resolvedProfile,
             clients = clients,
             subscriptions = subs,
-            payments = payments,
+            payments = pays,
+            planTemplates = mergedTemplates,
           )
         }
       } catch (e: Exception) {
@@ -368,22 +381,26 @@ class SuiviCoachViewModel(application: Application) : AndroidViewModel(applicati
   fun updateCoachProfile(fullName: String, businessName: String, phone: String, avatarUrl: String) {
     val config = _uiState.value.supabaseConfig
     val session = _uiState.value.session ?: return
+    val localProfile =
+      CoachProfile(
+        id = session.userId,
+        fullName = fullName.trim(),
+        businessName = businessName.trim(),
+        phone = phone.trim(),
+        email = session.email,
+        avatarUrl = avatarUrl,
+      )
+    // Always persist locally first so the avatar shows even if the remote sync fails.
+    viewModelScope.launch {
+      store.saveCoachProfile(localProfile)
+      _uiState.update { it.copy(coachProfile = localProfile) }
+    }
+    if (!config.isConfigured) return
     viewModelScope.launch {
       try {
         val updated =
           withValidToken { token, _ ->
-            supabase.upsertCoachProfile(
-              config,
-              token,
-              CoachProfile(
-                id = session.userId,
-                fullName = fullName.trim(),
-                businessName = businessName.trim(),
-                phone = phone.trim(),
-                email = session.email,
-                avatarUrl = avatarUrl,
-              ),
-            )
+            supabase.upsertCoachProfile(config, token, localProfile)
           }
         store.saveCoachProfile(updated)
         _uiState.update {
@@ -694,6 +711,8 @@ class SuiviCoachViewModel(application: Application) : AndroidViewModel(applicati
   }
 
   fun addPlanTemplate(name: String, durationDays: Int, priceDa: Int, sessionsTotal: Int?) {
+    val config = _uiState.value.supabaseConfig
+    val session = _uiState.value.session
     val tpl =
       PlanTemplate(
         id = "tpl_${System.currentTimeMillis()}",
@@ -704,13 +723,34 @@ class SuiviCoachViewModel(application: Application) : AndroidViewModel(applicati
       )
     val next = _uiState.value.planTemplates + tpl
     _uiState.update { it.copy(planTemplates = next) }
-    viewModelScope.launch { store.savePlanTemplates(next) }
+    viewModelScope.launch {
+      store.savePlanTemplates(next)
+      if (config.isConfigured && session != null) {
+        try {
+          withValidToken { token, s ->
+            supabase.upsertPlanTemplate(config, token, s.userId, tpl)
+          }
+        } catch (_: Exception) {
+          // local save already succeeded; remote sync will retry on next sync
+        }
+      }
+    }
   }
 
   fun deletePlanTemplate(templateId: String) {
+    val config = _uiState.value.supabaseConfig
     val next = _uiState.value.planTemplates.filterNot { it.id == templateId }
     _uiState.update { it.copy(planTemplates = next) }
-    viewModelScope.launch { store.savePlanTemplates(next) }
+    viewModelScope.launch {
+      store.savePlanTemplates(next)
+      if (config.isConfigured && _uiState.value.session != null) {
+        try {
+          withValidToken { token, _ -> supabase.deletePlanTemplate(config, token, templateId) }
+        } catch (_: Exception) {
+          // ignore remote delete failure
+        }
+      }
+    }
   }
 
   fun buildPaymentsCsv(): String {
@@ -754,5 +794,6 @@ class SuiviCoachViewModel(application: Application) : AndroidViewModel(applicati
     val clients: List<Client>,
     val subscriptions: List<Subscription>,
     val payments: List<Payment>,
+    val planTemplates: List<PlanTemplate>,
   )
 }
