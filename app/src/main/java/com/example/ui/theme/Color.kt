@@ -4,10 +4,10 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
-// Brand & surfaces
-val MidnightNavy = Color(0xFF090D16)
-val DarkCardSurface = Color(0xFF121826)
-val DarkSoftSurface = Color(0xFF1A2234)
+// Astryx VIP Brand & Obsidian Surfaces
+val ObsidianBlack = Color(0xFF07090E)
+val CarbonCardSurface = Color(0xFF0D1117)
+val CarbonSoftSurface = Color(0xFF161F2E)
 val DarkTextPrimary = Color(0xFFF8FAFC)
 val DarkTextMuted = Color(0xFF94A3B8)
 
@@ -17,16 +17,19 @@ val LightSoftSurface = Color(0xFFF1F5F9)
 val LightTextPrimary = Color(0xFF0F172A)
 val LightTextMuted = Color(0xFF5B6779)
 
-// Fills (solid buttons, bars)
-val ElectricBlue = Color(0xFF2563EB)
-val VibrantCyan = Color(0xFF0891B2)
+// Astryx VIP Accents & Gradients
+val LiquidGold = Color(0xFFD4AF37)
+val ElectricEmerald = Color(0xFF10B981)
+val NeonIndigo = Color(0xFF6366F1)
+val ElectricBlue = Color(0xFF3B82F6)
+val VibrantCyan = Color(0xFF06B6D4)
 
 // Status fills
 val StatusActiveGreen = Color(0xFF10B981)
 val StatusExpiringAmber = Color(0xFFF59E0B)
 val StatusExpiredRed = Color(0xFFEF4444)
 
-// Light-mode ink: accent/status hues darkened so small text clears 4.5:1 on white
+// Light-mode ink
 val BlueInkLight = Color(0xFF1D4ED8)
 val CyanInkLight = Color(0xFF0E7490)
 val GreenInkLight = Color(0xFF047857)
@@ -42,6 +45,7 @@ data class SuiviExtendedColors(
   val textMuted: Color,
   val accentBlue: Color,
   val accentCyan: Color,
+  val accentGold: Color,
   val accentInk: Color,
   val statusActive: Color,
   val statusExpiring: Color,
@@ -55,13 +59,14 @@ data class SuiviExtendedColors(
 
 val DarkSuiviColors =
   SuiviExtendedColors(
-    background = MidnightNavy,
-    cardSurface = DarkCardSurface,
-    softSurface = DarkSoftSurface,
+    background = ObsidianBlack,
+    cardSurface = CarbonCardSurface,
+    softSurface = CarbonSoftSurface,
     textPrimary = DarkTextPrimary,
     textMuted = DarkTextMuted,
     accentBlue = ElectricBlue,
     accentCyan = VibrantCyan,
+    accentGold = LiquidGold,
     accentInk = VibrantCyan,
     statusActive = StatusActiveGreen,
     statusExpiring = StatusExpiringAmber,
@@ -69,7 +74,7 @@ val DarkSuiviColors =
     statusActiveInk = StatusActiveGreen,
     statusExpiringInk = StatusExpiringAmber,
     statusExpiredInk = StatusExpiredRed,
-    subtleBorder = Color(0xFF1E293B),
+    subtleBorder = Color(0x26FFFFFF), // Specular highlight border
     isDark = true,
   )
 
@@ -82,6 +87,7 @@ val LightSuiviColors =
     textMuted = LightTextMuted,
     accentBlue = ElectricBlue,
     accentCyan = VibrantCyan,
+    accentGold = Color(0xFFB45309),
     accentInk = CyanInkLight,
     statusActive = StatusActiveGreen,
     statusExpiring = StatusExpiringAmber,

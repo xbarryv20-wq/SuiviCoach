@@ -1,9 +1,12 @@
 package com.example.ui.components
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -44,9 +48,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -59,14 +61,13 @@ import com.example.i18n.AppStrings
 import com.example.i18n.formatDaysRemaining
 import com.example.i18n.statusLabel
 import com.example.ui.theme.ElectricBlue
-import com.example.ui.theme.MidnightNavy
+import com.example.ui.theme.ObsidianBlack
 import com.example.ui.theme.SuiviTheme
 import com.example.ui.theme.VibrantCyan
 import com.example.ui.theme.tabular
 
 /**
- * Sharp, geometric athletic "S" integrated with a pulse/check line in Electric Blue (#3B82F6)
- * & Cyan (#06B6D4) inside a rounded dark badge (#090D16).
+ * Astryx VIP Logo: Sharp athletic "S" with glowing gradient strokes and specular borders.
  */
 @Composable
 fun SuiviCoachLogo(
@@ -76,24 +77,24 @@ fun SuiviCoachLogo(
   Canvas(modifier = modifier.size(size)) {
     val w = this.size.width
     val h = this.size.height
-    val corner = w * 0.26f
+    val corner = w * 0.28f
 
-    // Rounded Midnight Navy badge (#090D16)
+    // Obsidian card background
     drawRoundRect(
-      color = MidnightNavy,
+      color = ObsidianBlack,
       cornerRadius = CornerRadius(corner, corner),
     )
 
-    // Subtle glowing border highlight
+    // Specular highlight border
     drawRoundRect(
       brush =
         Brush.linearGradient(
-          colors = listOf(ElectricBlue.copy(alpha = 0.55f), VibrantCyan.copy(alpha = 0.35f)),
+          colors = listOf(Color.White.copy(alpha = 0.4f), ElectricBlue.copy(alpha = 0.2f)),
           start = Offset.Zero,
           end = Offset(w, h),
         ),
       cornerRadius = CornerRadius(corner, corner),
-      style = Stroke(width = w * 0.035f),
+      style = Stroke(width = w * 0.04f),
     )
 
     // Geometric athletic "S"
@@ -117,24 +118,104 @@ fun SuiviCoachLogo(
           start = Offset(w * 0.2f, h * 0.8f),
           end = Offset(w * 0.8f, h * 0.2f),
         ),
-      style = Stroke(width = w * 0.115f, cap = StrokeCap.Square, join = StrokeJoin.Miter),
+      style = Stroke(width = w * 0.12f, cap = StrokeCap.Square, join = StrokeJoin.Miter),
     )
+  }
+}
 
-    // Integrated athletic pulse / check accent cutting across top-right
-    val pulsePath =
-      Path().apply {
-        moveTo(w * 0.48f, h * 0.36f)
-        lineTo(w * 0.58f, h * 0.36f)
-        lineTo(w * 0.65f, h * 0.20f)
-        lineTo(w * 0.73f, h * 0.43f)
-        lineTo(w * 0.82f, h * 0.28f)
+/**
+ * Astryx VIP Primary Button with spring scale animation and rich gradient fill.
+ */
+@Composable
+fun VipButton(
+  text: String,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  enabled: Boolean = true,
+  icon: @Composable (() -> Unit)? = null,
+) {
+  val colors = SuiviTheme.colors
+  val interactionSource = remember { MutableInteractionSource() }
+  val isPressed by interactionSource.collectIsPressedAsState()
+  val scale by animateFloatAsState(targetValue = if (isPressed) 0.96f else 1f, label = "btnScale")
+
+  val gradient = Brush.horizontalGradient(
+    colors = listOf(colors.accentBlue, colors.accentCyan)
+  )
+
+  Box(
+    modifier = modifier
+      .scale(scale)
+      .clip(RoundedCornerShape(16.dp))
+      .background(if (enabled) gradient else Brush.linearGradient(listOf(colors.softSurface, colors.softSurface)))
+      .clickable(
+        interactionSource = interactionSource,
+        indication = null,
+        enabled = enabled,
+        onClick = onClick
+      )
+      .padding(horizontal = 20.dp, vertical = 14.dp),
+    contentAlignment = Alignment.Center,
+  ) {
+    Row(
+      horizontalArrangement = Arrangement.spacedBy(8.dp),
+      verticalAlignment = Alignment.CenterVertically,
+    ) {
+      if (icon != null) {
+        icon()
       }
+      Text(
+        text = text,
+        style = MaterialTheme.typography.labelLarge,
+        fontWeight = FontWeight.Bold,
+        color = Color.White,
+      )
+    }
+  }
+}
 
-    drawPath(
-      path = pulsePath,
-      color = VibrantCyan,
-      style = Stroke(width = w * 0.065f, cap = StrokeCap.Round, join = StrokeJoin.Round),
-    )
+/**
+ * Astryx VIP Glass Button with specular border and glowing effect.
+ */
+@Composable
+fun VipGlassButton(
+  text: String,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  icon: @Composable (() -> Unit)? = null,
+) {
+  val colors = SuiviTheme.colors
+  val interactionSource = remember { MutableInteractionSource() }
+  val isPressed by interactionSource.collectIsPressedAsState()
+  val scale by animateFloatAsState(targetValue = if (isPressed) 0.96f else 1f, label = "glassScale")
+
+  Box(
+    modifier = modifier
+      .scale(scale)
+      .clip(RoundedCornerShape(16.dp))
+      .background(colors.cardSurface.copy(alpha = 0.6f))
+      .clickable(
+        interactionSource = interactionSource,
+        indication = null,
+        onClick = onClick
+      )
+      .padding(horizontal = 18.dp, vertical = 13.dp),
+    contentAlignment = Alignment.Center,
+  ) {
+    Row(
+      horizontalArrangement = Arrangement.spacedBy(8.dp),
+      verticalAlignment = Alignment.CenterVertically,
+    ) {
+      if (icon != null) {
+        icon()
+      }
+      Text(
+        text = text,
+        style = MaterialTheme.typography.labelLarge,
+        fontWeight = FontWeight.SemiBold,
+        color = colors.textPrimary,
+      )
+    }
   }
 }
 
@@ -227,13 +308,13 @@ fun StatusBadge(
     modifier =
       modifier
         .clip(RoundedCornerShape(50))
-        .background(tint.copy(alpha = 0.14f))
-        .padding(horizontal = 10.dp, vertical = 4.dp),
+        .background(tint.copy(alpha = 0.18f))
+        .padding(horizontal = 12.dp, vertical = 5.dp),
   ) {
     Text(
       text = strings.statusLabel(status),
       style = MaterialTheme.typography.labelMedium,
-      fontWeight = FontWeight.SemiBold,
+      fontWeight = FontWeight.Bold,
       color = tint,
       maxLines = 1,
       overflow = TextOverflow.Ellipsis,
@@ -300,10 +381,6 @@ fun SubscriptionProgressBar(
   }
 }
 
-/**
- * Avatar that decodes local base64 data URIs (Coil cannot load "data:" URIs natively)
- * and falls back to Coil for http(s) URLs.
- */
 @Composable
 fun AvatarImage(
   avatarUrl: String,
@@ -355,10 +432,6 @@ fun AvatarImage(
   }
 }
 
-/**
- * "III"-style overflow menu button that opens a quick-settings panel
- * containing the language switcher and the dark/light theme toggle.
- */
 @Composable
 fun QuickSettingsMenu(
   language: AppLanguage,
@@ -459,8 +532,8 @@ fun ClientMonogramAvatar(
     modifier =
       Modifier
         .size(size)
-        .clip(RoundedCornerShape(14.dp))
-        .background(accent.copy(alpha = 0.16f)),
+        .clip(RoundedCornerShape(16.dp))
+        .background(accent.copy(alpha = 0.18f)),
     contentAlignment = Alignment.Center,
   ) {
     Text(
